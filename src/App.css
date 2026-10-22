@@ -1,186 +1,382 @@
-:root {
-  --fundo: #17140f;
-  --superficie: #221e17;
-  --borda: #3a3328;
-  --texto: #f2ece0;
-  --texto-suave: #b8ad98;
-  --destaque: #f2b134;
-  --verde: #6fcf97;
-  --laranja: #f2994a;
-  --cinza: #a39d90;
-}
+/* ==========================================================================
+   App.css — Layout e componentes do Painel de Projetos
+   1. Layout  2. Cabeçalho  3. Seção  4. Resumo/Indicador  5. Cards
+   6. StatusBadge  7. TecnologiaTag  8. Rodapé  9. Animações  10. Responsivo
+   (os tokens e o reset vêm de index.css)
+   ========================================================================== */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body {
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: var(--fundo);
-  color: var(--texto);
-  line-height: 1.5;
-}
-
+/* 1. LAYOUT
+   -------------------------------------------------------------------------- */
 .app {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 0 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
 }
 
-/* Cabeçalho */
+.app > main {
+  flex: 1;
+}
+
+
+/* 2. CABEÇALHO
+   -------------------------------------------------------------------------- */
 .cabecalho {
-  padding: 48px 0 24px;
-  border-bottom: 1px solid var(--borda);
+  padding-block: var(--space-8) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .cabecalho h1 {
-  font-size: 2.4rem;
-  color: var(--destaque);
+  font-size: var(--fs-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  color: var(--color-accent-text);
+}
+
+/* Texto em degradê, com fallback para cor sólida */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .cabecalho h1 {
+    background-image: linear-gradient(100deg, var(--heading-from), var(--heading-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
 
 .cabecalho p {
-  color: var(--texto-suave);
-  margin-top: 6px;
+  margin-top: var(--space-3);
+  max-width: 55ch;
+  font-size: var(--fs-lg);
+  color: var(--color-text-soft);
 }
 
-/* Seção */
+
+/* 3. SEÇÃO
+   -------------------------------------------------------------------------- */
 .secao {
-  margin-top: 36px;
+  margin-top: var(--space-7);
 }
 
 .secao h2 {
-  font-size: 1.3rem;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-xl);
+  font-weight: 700;
 }
 
-/* Resumo e Indicador */
+.secao h2::before {
+  content: "";
+  width: 0.3rem;
+  height: 1.3em;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+
+
+/* 4. RESUMO E INDICADOR
+   -------------------------------------------------------------------------- */
 .resumo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-4);
 }
 
 .indicador {
-  background: var(--superficie);
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  padding: 20px;
+  position: relative;
   display: flex;
   flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.indicador::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
+.indicador:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
 }
 
 .indicador-valor {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--destaque);
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-text);
 }
 
 .indicador-rotulo {
-  color: var(--texto-suave);
-  font-size: 0.9rem;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--color-text-soft);
 }
 
-/* Lista e cards */
+
+/* 5. LISTA E CARDS
+   -------------------------------------------------------------------------- */
 .lista-projetos {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.5rem), 1fr));
+  gap: var(--space-5);
 }
 
 .card {
-  background: var(--superficie);
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  padding: 20px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: transform 0.15s ease;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
 }
 
 .card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
 }
 
+.card:active {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.card:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-ring);
+}
+
+/* Projeto em destaque */
 .card-destaque {
-  border: 2px solid var(--destaque);
-  box-shadow: 0 0 18px rgba(242, 177, 52, 0.18);
+  border-color: var(--color-accent);
+  background:
+    linear-gradient(180deg, var(--color-accent-bg), transparent 50%),
+    var(--color-surface);
+  box-shadow:
+    0 0 0 1px var(--color-accent-ring),
+    var(--shadow-md);
+}
+
+.card-destaque:hover {
+  border-color: var(--color-accent);
 }
 
 .selo-destaque {
-  color: var(--destaque);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--color-accent-text);
+  background: var(--color-accent-bg);
+  border: 1px solid var(--color-accent-ring);
+  border-radius: var(--radius-full);
 }
 
 .card-topo {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: flex-start;
-  gap: 10px;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
 }
 
 .card-topo h3 {
-  font-size: 1.1rem;
+  font-size: var(--fs-lg);
+  font-weight: 700;
 }
 
 .card-descricao {
-  color: var(--texto-suave);
+  color: var(--color-text-soft);
 }
 
 .card-responsavel {
-  font-size: 0.85rem;
-  color: var(--texto-suave);
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
 }
 
-/* Badge de status */
+
+/* 6. STATUS BADGE
+   -------------------------------------------------------------------------- */
 .badge {
-  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.25rem 0.7rem;
+  font-size: var(--fs-xs);
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 999px;
+  line-height: 1.4;
   white-space: nowrap;
-  border: 1px solid currentColor;
+  color: var(--badge-color);
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  border-radius: var(--radius-full);
+}
+
+/* Bolinha indicadora (reforça o status sem depender só da cor) */
+.badge::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .badge-concluido {
-  color: var(--verde);
+  --badge-color: var(--color-success);
+  --badge-bg: var(--color-success-bg);
+  --badge-border: var(--color-success-border);
 }
 
 .badge-desenvolvimento {
-  color: var(--laranja);
+  --badge-color: var(--color-warning);
+  --badge-bg: var(--color-warning-bg);
+  --badge-border: var(--color-warning-border);
 }
 
 .badge-planejamento,
 .badge-outro {
-  color: var(--cinza);
+  --badge-color: var(--color-neutral);
+  --badge-bg: var(--color-neutral-bg);
+  --badge-border: var(--color-neutral-border);
 }
 
-/* Tags de tecnologia */
+
+/* 7. TECNOLOGIA TAG
+   -------------------------------------------------------------------------- */
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
 }
 
 .tag {
-  background: var(--borda);
-  color: var(--texto);
-  font-size: 0.75rem;
-  padding: 3px 9px;
-  border-radius: 6px;
+  padding: 0.2rem 0.65rem;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
-/* Rodapé */
+
+/* 8. RODAPÉ
+   -------------------------------------------------------------------------- */
 .rodape {
-  margin-top: 48px;
-  padding: 24px 0;
-  border-top: 1px solid var(--borda);
+  margin-top: var(--space-8);
+  padding-block: var(--space-5);
   text-align: center;
-  color: var(--texto-suave);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
+  border-top: 1px solid var(--color-border);
+}
+
+
+/* 9. ANIMAÇÕES (desativadas por prefers-reduced-motion em index.css)
+   -------------------------------------------------------------------------- */
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cabecalho,
+.indicador,
+.card {
+  animation: subir 500ms var(--ease) backwards;
+}
+
+.indicador:nth-child(2),
+.card:nth-child(2) { animation-delay: 60ms; }
+.indicador:nth-child(3),
+.card:nth-child(3) { animation-delay: 120ms; }
+.card:nth-child(4) { animation-delay: 180ms; }
+.card:nth-child(5) { animation-delay: 240ms; }
+.card:nth-child(n + 6) { animation-delay: 300ms; }
+
+
+/* 10. RESPONSIVO (mobile-first: base = celular)
+   -------------------------------------------------------------------------- */
+
+/* Celulares pequenos */
+@media (max-width: 30rem) {
+  :root {
+    --gutter: var(--space-4);
+  }
+
+  .cabecalho {
+    padding-block: var(--space-7) var(--space-5);
+  }
+
+  .cabecalho p {
+    font-size: var(--fs-md);
+  }
+
+  .secao {
+    margin-top: var(--space-6);
+  }
+
+  .card,
+  .indicador {
+    padding: var(--space-4);
+  }
+}
+
+/* Tablets e acima */
+@media (min-width: 48rem) {
+  :root {
+    --gutter: var(--space-6);
+  }
+
+  .card-topo {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Desktop largo */
+@media (min-width: 64rem) {
+  .secao {
+    margin-top: var(--space-8);
+  }
+
+  .lista-projetos {
+    gap: var(--space-6);
+  }
 }
